@@ -46,7 +46,7 @@ The uploaded CSV should contain columns for:
 
 1. **Clone the repository:**
    ```sh
-   git clone <repo-url>
+   git clone <[repo-url](https://github.com/ayomidedavid/university-timetable.git)>
    cd timetable
    ```
 2. **Install dependencies:**

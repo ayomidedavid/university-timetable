@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Edit Course</h1>
+
+    <form method="POST" action="{{ url_for('edit_course', course_id=course_id) }}">
+        {{ form.hidden_tag() }} <!-- Ensure CSRF token is included -->
+        {{ form.name.label }} {{ form.name(size=32) }}<br>
+        {{ form.code.label }} {{ form.code(size=32) }}<br>
+        {{ form.unit.label }} {{ form.unit() }}<br>
+        {{ form.num_of_students.label }} {{ form.num_of_students() }}<br>
+        {{ form.lecturer_id.label }} {{ form.lecturer_id() }}<br>
+        {{ form.department_id.label }} {{ form.department_id() }}<br>
+        {{ form.level.label }} {{ form.level() }}<br>
+        {{ form.status.label }} {{ form.status() }}<br> <!-- Corrected field name -->
+        <button type="submit">Edit</button>
+    </form>
+
+    <a href="{{ url_for('course') }}">Back to Courses</a>
+</body>
+</html>

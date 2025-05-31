@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Venue</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Edit Venue</h1>
+
+    <form method="POST" action="{{ url_for('edit_venue', venue_id=venue_id) }}">
+        {{ form.hidden_tag() }} <!-- Ensure CSRF token is included -->
+        {{ form.name.label }} {{ form.name(size=32) }}<br>
+        {{ form.size.label }} {{ form.size() }}<br>
+        {{ form.location.label }} {{ form.location(size=32) }}<br>
+        <button type="submit">Edit</button>
+    </form>
+
+    <a href="{{ url_for('venue') }}">Back to Venues</a>
+</body>
+</html>

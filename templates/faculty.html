@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Faculties{% endblock %}
+
+{% block content %}
+<h1>Manage Faculties</h1>
+
+<!-- Form to Add a New Faculty -->
+<form action="{{ url_for('faculty') }}" method="POST">
+    {{ form.hidden_tag() }} <!-- Ensure CSRF token is included -->
+    {{ form.name.label }} {{ form.name() }}<br>
+    {{ form.description.label }} {{ form.description() }}<br>
+    {{ form.submit() }}
+</form>
+
+<h2>Existing Faculties</h2>
+
+<!-- Modal for Editing Faculty -->
+<div id="editFacultyModal" style="display:none;">
+    <form id="editFacultyForm" action="{{ url_for('edit_faculty', id=0) }}" method="POST">
+        {{ form.hidden_tag() }}  <!-- Add CSRF token here -->
+        <input type="hidden" name="id" id="editFacultyId">
+        <input type="text" id="editFacultyName" name="name"><br>
+        <label for="editFacultyDescription">Description:</label>
+        <input type="text" id="editFacultyDescription" name="description"><br>
+        <button type="submit">Save Changes</button>
+        <button type="button" onclick="closeModal()">Cancel</button>
+    </form>
+</div>
+
+<!-- Table to Display Existing Faculties -->
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    {% for faculty in faculties %}
+    <tr>
+        <td>{{ faculty[1] }}</td>  <!-- Accessing name by index -->
+        <td>{{ faculty[2] }}</td>  <!-- Accessing description by index -->
+        <td>
+            <a href="#" onclick="openModal({{ faculty[0] }}, '{{ faculty[1] }}', '{{ faculty[2] }}')">Edit</a> |
+            <form action="{{ url_for('delete_faculty', id=faculty[0]) }}" method="POST" style="display:inline;">
+                {{ form.hidden_tag() }}  <!-- Add CSRF token here -->
+                <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+    // Function to open the edit modal and populate it with faculty data
+    function openModal(id, name, description) {
+        // Set the form action dynamically with the faculty ID
+        document.getElementById('editFacultyForm').action = "{{ url_for('edit_faculty', id=0) }}".replace("0", id);
+        document.getElementById('editFacultyId').value = id;
+        document.getElementById('editFacultyName').value = name;
+        document.getElementById('editFacultyDescription').value = description;
+        document.getElementById('editFacultyModal').style.display = 'block';
+    }
+
+    // Function to close the edit modal
+    function closeModal() {
+        document.getElementById('editFacultyModal').style.display = 'none';
+    }
+</script>
+{% endblock %}

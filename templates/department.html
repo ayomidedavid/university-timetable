@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Departments{% endblock %}
+
+{% block content %}
+<h1>Manage Departments</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Management</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Department Management</h1>
+    <form method="POST" action="{{ url_for('department') }}">
+        {{ form.hidden_tag() }} <!-- Ensure CSRF token is included -->
+        {{ form.name.label }}<br>
+        {{ form.name(size=32) }}<br>
+        {{ form.faculty_id.label }}<br>
+        {{ form.faculty_id() }}<br>
+        <button type="submit">Add Department</button>
+    </form>
+
+    <h2>Existing Departments</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Department ID</th>
+                <th>Department Name</th>
+                <th>Faculty Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for department in departments %}
+                <tr>
+                    <td>{{ department.department_id }}</td>
+                    <td>{{ department.department_name }}</td>
+                    <td>{{ department.faculty_name }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_department', id=department.department_id) }}" style="display: inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" onclick="return confirm('Are you sure you want to delete this department?');">Delete</button>
+
+                        </form>
+                        <a href="{{ url_for('edit_department', department_id=department.department_id) }}">Edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+{% endblock %}

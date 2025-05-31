@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Generated Timetable{% endblock %}
+
+{% block content %}
+<h1>Generated Timetable</h1>
+
+<!-- Filter Form -->
+<form method="POST" action="{{ url_for('timetable_bp.timetable') }}">
+    {{ form.hidden_tag() }} <!-- Add CSRF token -->
+    <label for="department_id">Filter by Department:</label>
+    <select name="department_id" id="department_id">
+        <option value="">All Departments</option>
+        {% for department in departments %}
+        <option value="{{ department.department_id }}" {% if selected_department == department.department_id|string %}selected{% endif %}>
+            {{ department.department_name }}
+        </option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+<form method="get" action="{{ url_for('timetable') }}">
+    <button type="submit" name="edit" value="true" class="btn btn-primary">Edit Timetable</button>
+</form>
+
+<form method="post" action="{{ url_for('clear_timetable') }}" style="display: inline;">
+    <button type="submit" class="btn btn-danger">Clear Timetable</button>
+</form>
+
+<!-- Timetable Table -->
+{% if timetable %}
+<table class="timetable">
+    <thead>
+        <tr>
+            <th>Day</th>
+            {% for time_slot in time_slots %}
+            {% set start_hour = time_slot.split(':')[0]|int %}
+            {% set end_hour = (start_hour + 1) if (start_hour + 1) < 24 else 0 %}
+            {% set start_str = '%02d:00' % start_hour %}
+            {% set end_str = '%02d:00' % end_hour %}
+            <th>{{ start_str }}-{{ end_str }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for day in days %}
+        <tr>
+            <td>{{ day }}</td>
+            {% for time_slot in time_slots %}
+            <td>
+                {% set entries = timetable.get(day, {}).get(time_slot) %}
+                {% if time_slot == "12:00" %}
+                    <strong>Break</strong> <!-- Official break time -->
+                {% elif day == "Wednesday" and time_slot == "18:00" %}
+                    <strong>Chapel Time</strong> <!-- Chapel time on Wednesday -->
+                {% elif entries %}
+                    {% for entry in entries %}
+                        <strong>{{ entry.course_name }}</strong> ({{ entry.course_unit }} unit{% if entry.course_unit is not none and entry.course_unit > 1 %}s{% endif %})<br>
+                        <em>{{ entry.venue }}</em><br>
+                        <small>{{ entry.lecturer }}</small><br>
+                        <small>Level: {{ entry.level }}</small><br>
+                        <small>Status: {{ entry.course_status }}</small><br><br>
+                    {% endfor %}
+                {% endif %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Day</th>
+            <th>Time Slot</th>
+            <th>Course</th>
+            <th>Room</th>
+            <th>Lecturer</th>
+            {% if enable_swap %}
+                <th>Actions</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in timetable %}
+        <tr>
+            <td>{{ row.day }}</td>
+            <td>{{ row.time_slot }}</td>
+            <td>{{ row.course_name }}</td>
+            <td>{{ row.room }}</td>
+            <td>{{ row.lecturer }}</td>
+            {% if enable_swap %}
+                <td>
+                    <button class="btn btn-warning btn-sm">Swap</button>
+                </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No timetable data available.</p>
+{% endif %}
+
+<a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+<button onclick="window.open('{{ url_for('timetable_bp.timetable_pdf') }}', '_blank')">Print as PDF</button>
+{% endblock %}

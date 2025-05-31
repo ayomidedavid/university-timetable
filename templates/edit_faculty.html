@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Faculty</title>
+</head>
+<body>
+    <h1>Edit Faculty</h1>
+    
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.name.label }} {{ form.name() }}<br>
+        {{ form.description.label }} {{ form.description() }}<br>
+        {{ form.submit() }}
+    </form>
+
+    <a href="{{ url_for('faculty') }}">Back to Faculties</a>
+</body>
+</html>

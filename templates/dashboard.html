@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h1>Welcome, {{ session['admin'] }}</h1>
+<p>Use the navigation bar to manage the system.</p>
+
+<div class="dashboard-cards">
+    <div class="card">
+        <h2>Faculties</h2>
+        <p>{{ faculty_count }}</p>
+    </div>
+    <div class="card">
+        <h2>Departments</h2>
+        <p>{{ department_count }}</p>
+    </div>
+    <div class="card">
+        <h2>Courses</h2>
+        <p>{{ course_count }}</p>
+    </div>
+    <div class="card">
+        <h2>Lecturers</h2>
+        <p>{{ lecturer_count }}</p>
+    </div>
+    <div class="card">
+        <h2>HODs</h2>
+        <p>{{ hod_count }}</p>
+    </div>
+    <div class="card">
+        <h2>Venues</h2>
+        <p>{{ venue_count }}</p>
+    </div>
+</div>
+{% endblock %}

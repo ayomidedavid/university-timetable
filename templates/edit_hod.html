@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit HOD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Edit HOD</h1>
+
+    <form method="POST" action="{{ url_for('edit_hod', hod_id=hod_id) }}">
+        {{ form.hidden_tag() }} <!-- Ensure CSRF token is included -->
+        {{ form.name.label }} {{ form.name(size=32) }}<br>
+        {{ form.faculty_id.label }} {{ form.faculty_id() }}<br> <!-- Dropdown for department names -->
+        <button type="submit">Edit</button>
+    </form>
+
+    <a href="{{ url_for('hod') }}">Back to HODs</a>
+</body>
+</html>

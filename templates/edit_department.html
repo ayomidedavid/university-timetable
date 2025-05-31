@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Department</title>
+</head>
+<body>
+    <h1>Edit Department</h1>
+    <form method="POST" action="{{ url_for('edit_department', department_id=department_id) }}">
+        {{ form.hidden_tag() }}  <!-- CSRF token -->
+        <div>
+            {{ form.name.label }}<br>
+            {{ form.name(size=32) }}<br>
+            {% for error in form.name.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.faculty_id.label }}<br>
+            {{ form.faculty_id() }}<br>
+            {% for error in form.faculty_id.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <button type="submit">Update Department</button>
+    </form>
+    <a href="{{ url_for('department') }}">Back to Departments</a>
+</body>
+</html>

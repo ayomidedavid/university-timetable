@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable Options</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('faculty') }}">Faculties</a></li>
+            <li><a href="{{ url_for('department') }}">Departments</a></li>
+            <li><a href="{{ url_for('hod') }}">HODs</a></li>
+            <li><a href="{{ url_for('course') }}">Courses</a></li>
+            <li><a href="{{ url_for('venue') }}">Venues</a></li>
+            <li><a href="{{ url_for('lecturer') }}">Lecturers</a></li>
+            <li><a href="{{ url_for('timetable_bp.timetable') }}">Timetable</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+    <main>
+        <h1>Timetable Options</h1>
+        <div class="options">
+            <button onclick="location.href='{{ url_for('timetable_bp.database_timetable') }}'" class="button">View Database Timetable</button>
+            <button onclick="location.href='{{ url_for('timetable_bp.uploaded_timetable') }}'" class="button">View Uploaded Timetable</button>
+        </div>
+    </main>
+</body>
+</html>

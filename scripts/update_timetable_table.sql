@@ -1,0 +1,2 @@
+ALTER TABLE timetable
+ADD COLUMN level INT NOT NULL;

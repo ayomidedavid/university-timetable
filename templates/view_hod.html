@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}HOD Details{% endblock %}
+
+{% block content %}
+<h1>HOD Details</h1>
+<p><strong>Name:</strong> {{ hod.hod_name }}</p>
+<p><strong>Department:</strong> {{ hod.department_name }}</p>
+
+<!-- Filter Form -->
+<form method="POST" action="{{ url_for('view_hod', hod_id=hod.hod_id) }}">
+    {{ form.hidden_tag() }} <!-- Add CSRF token -->
+    <label for="level">Filter by Level:</label>
+    <select name="level" id="level">
+        <option value="">All Levels</option>
+        {% for lvl in range(100, 600, 100) %}
+        <option value="{{ lvl }}" {% if level == lvl|string %}selected{% endif %}>{{ lvl }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="course_unit">Filter by Course Unit:</label>
+    <select name="course_unit" id="course_unit">
+        <option value="">All Units</option>
+        {% for unit in range(1, 4) %}
+        <option value="{{ unit }}" {% if course_unit == unit|string %}selected{% endif %}>{{ unit }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="course_status">Filter by Course Status:</label>
+    <select name="course_status" id="course_status">
+        <option value="">All Statuses</option>
+        <option value="C" {% if course_status == "C" %}selected{% endif %}>Compulsory</option>
+        <option value="E" {% if course_status == "E" %}selected{% endif %}>Elective</option>
+    </select>
+
+    <button type="submit">Apply Filters</button>
+</form>
+
+<h2>Lecturers and Assigned Courses</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Lecturer</th>
+            <th>Course Name</th>
+            <th>Course Code</th>
+            <th>Course Unit</th>
+            <th>Level</th>
+            <th>Course Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in lecturers_courses %}
+        <tr>
+            <td>{{ entry.lecturer_name }}</td>
+            <td>{{ entry.course_name }}</td>
+            <td>{{ entry.course_code }}</td>
+            <td>{{ entry.course_unit }}</td>
+            <td>{{ entry.level }}</td>
+            <td>{{ entry.course_status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ url_for('hod') }}">Back to HOD List</a>
+{% endblock %}

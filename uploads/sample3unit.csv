@@ -1,0 +1,33 @@
+course_name,course_unit,num_of_students,lecturer,level,course_status
+Mathematics,3,250,Dr. John Doe,100,C
+Chemistry,3,220,Dr. Alice Johnson,100,C
+Biology,3,280,Dr. Bob Brown,300,C
+Economics,3,280,Prof. Michael Green,300,C
+History,3,220,Dr. Sarah Lee,100,C
+Psychology,3,300,Dr. Laura Martinez,300,C
+Sociology,3,250,Prof. James Taylor,200,C
+Environmental Science,3,220,Dr. Kevin Thomas,100,C
+Statistics,3,300,Prof. Barbara Harris,200,C
+Art History,3,270,Dr. Nancy King,200,C
+Game Development,3,270,Prof. Henry Adams,100,C
+Robotics,3,280,Dr. Sophia Turner,300,C
+Augmented Reality,3,260,Dr. Liam Harris,200,C
+Virtual Reality,3,240,Prof. Emma Wilson,100,C
+Anthropology,3,240,Dr. Patricia Scott,300,C
+Geography,3,260,Dr. George Adams,200,C
+Linguistics,3,220,Dr. Karen Baker,100,C
+Creative Writing,3,300,Prof. Lisa Evans,200,C
+Media Studies,3,280,Dr. Mark Turner,100,C
+Film Studies,3,250,Dr. Susan Collins,300,C
+Journalism,3,300,Dr. Angela Roberts,100,C
+Communication Studies,3,270,Dr. Charles Phillips,300,C
+Marketing,3,350,Dr. Steven Parker,100,C
+Finance,3,300,Dr. Daniel Morris,200,C
+Accounting,3,280,Dr. Jennifer Rogers,100,C
+Management,3,250,Prof. Brian Reed,300,C
+Data Science,3,300,Dr. Jason Murphy,200,C
+Cybersecurity,3,280,Prof. Laura Bailey,100,C
+Artificial Intelligence,3,350,Dr. Steven Rivera,300,C
+Machine Learning,3,300,Dr. Megan Cooper,200,C
+Cloud Computing,3,320,Dr. Alan Walker,300,C
+Blockchain Technology,3,290,Prof. Diana Carter,200,C

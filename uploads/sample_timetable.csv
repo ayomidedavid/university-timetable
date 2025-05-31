@@ -1,0 +1,50 @@
+course_name,course_unit,num_of_students,lecturer,level,course_status
+MAT 101,3,250,Dr. John Doe,100,C
+Physics,4,300,Prof. Jane Smith,200,C
+Chemistry,3,220,Dr. Alice Johnson,100,C
+Biology,3,280,Dr. Bob Brown,300,C
+Computer Science,4,400,Prof. Carol White,200,C
+STUDIES IN LEADERSHIP V,1,210,Mr Aishat Lawal,300,C
+English Literature,2,350,Dr. Emily Clark,200,C
+Economics,3,280,Prof. Michael Green,300,C
+History,3,220,Dr. Sarah Lee,100,C
+Philosophy,2,280,Dr. David Wilson,200,C
+Psychology,3,300,Dr. Laura Martinez,300,C
+Sociology,3,250,Prof. James Taylor,200,C
+Political Science,4,400,Dr. Linda Anderson,300,C
+Environmental Science,3,220,Dr. Kevin Thomas,100,C
+Statistics,3,300,Prof. Barbara Harris,200,C
+Art History,3,270,Dr. Nancy King,200,C
+Music Theory,2,200,Prof. Steven Young,100,C
+Anthropology,3,240,Dr. Patricia Scott,300,C
+Geography,3,260,Dr. George Adams,200,C
+Linguistics,3,220,Dr. Karen Baker,100,C
+Philosophy of Science,2,280,Dr. Brian Carter,300,C
+Creative Writing,3,300,Prof. Lisa Evans,200,C
+Media Studies,3,280,Dr. Mark Turner,100,C
+Film Studies,3,250,Dr. Susan Collins,300,C
+Theatre Arts,2,200,Prof. Kevin Mitchell,200,C
+Journalism,3,300,Dr. Angela Roberts,100,C
+Communication Studies,3,270,Dr. Charles Phillips,300,C
+Public Relations,2,220,Prof. Michelle Campbell,200,C
+Marketing,3,350,Dr. Steven Parker,100,C
+Business Administration,4,400,Prof. Laura Stewart,300,C
+Finance,3,300,Dr. Daniel Morris,200,C
+Accounting,3,280,Dr. Jennifer Rogers,100,C
+Management,3,250,Prof. Brian Reed,300,C
+Human Resources,2,200,Dr. Emily Cook,200,C
+Information Technology,4,400,Prof. Kevin Morgan,100,C
+Software Engineering,4,380,Dr. Rachel Bell,300,C
+Data Science,3,300,Dr. Jason Murphy,200,C
+Cybersecurity,3,280,Prof. Laura Bailey,100,C
+Artificial Intelligence,3,350,Dr. Steven Rivera,300,C
+Machine Learning,3,300,Dr. Megan Cooper,200,C
+Cloud Computing,3,320,Dr. Alan Walker,300,C
+Blockchain Technology,3,290,Prof. Diana Carter,200,C
+Quantum Computing,4,310,Dr. Ethan Brooks,300,C
+Digital Marketing,2,250,Dr. Olivia Scott,200,C
+Game Development,3,270,Prof. Henry Adams,100,C
+Robotics,3,280,Dr. Sophia Turner,300,C
+Augmented Reality,3,260,Dr. Liam Harris,200,C
+Virtual Reality,3,240,Prof. Emma Wilson,100,C
+Big Data Analytics,4,350,Dr. Noah Clark,300,C

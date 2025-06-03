@@ -157,6 +157,56 @@
                 padding: 0.4rem 0.8rem;
             }
         }
+        .swap-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+            background: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            max-width: 700px;
+        }
+        .swap-form-row {
+            display: flex;
+            flex-direction: column;
+            min-width: 220px;
+            flex: 1 1 220px;
+        }
+        .swap-form label {
+            margin-bottom: 0.3rem;
+        }
+        .swap-form select {
+            padding: 0.4rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+        @media (max-width: 700px) {
+            .swap-form {
+                flex-direction: column;
+                gap: 0.7rem;
+                padding: 0.7rem 0.5rem;
+            }
+            .swap-form-row {
+                min-width: 0;
+            }
+        }
+        .timetable-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 600px) {
+            .timetable-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
     </style>
     <script>
         let selectedCourse = null;
@@ -255,6 +305,11 @@
         function closeEditModal() {
             document.getElementById('edit-modal').style.display = 'none';
         }
+
+        function clearTimetable(e) {
+            e.preventDefault();
+            document.getElementById('clear-timetable-form').submit();
+        }
     </script>
 </head>
 <body>
@@ -281,12 +336,46 @@
         </form>
         <hr>
         <h2>Generated Timetable</h2>
-        <button onclick="printTable()" class="btn btn-print">Print Timetable</button>
-        <form action="{{ url_for('timetable_bp.clear_timetable') }}" method="POST" style="display: inline;">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" class="btn btn-danger">Clear Timetable</button>
-        </form>
+        <div class="timetable-actions">
+            <button onclick="printTable()" class="btn btn-print">Print Timetable</button>
+            <button onclick="clearTimetable(event)" class="btn btn-danger">Clear Timetable</button>
+            <form id="clear-timetable-form" action="{{ url_for('timetable_bp.clear_timetable') }}" method="POST" style="display: none;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            </form>
+        </div>
         <p id="selected-course" style="display: none;"></p>
+        <form action="{{ url_for('timetable_bp.edit_timetable') }}" method="POST" class="swap-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="swap-form-row">
+                <label for="course1"><strong>Swap:</strong> Select First Course</label>
+                <select name="course1" required>
+                    {% for day, slots in timetable.items() %}
+                        {% for hour, entries in slots.items() %}
+                            {% for entry in entries %}
+                                <option value="{{ day }}|{{ hour }}|{{ entry.course_name }}">
+                                    {{ entry.course_name }} ({{ day }} - {{ hour }})
+                                </option>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="swap-form-row">
+                <label for="course2">Select Second Course</label>
+                <select name="course2" required>
+                    {% for day, slots in timetable.items() %}
+                        {% for hour, entries in slots.items() %}
+                            {% for entry in entries %}
+                                <option value="{{ day }}|{{ hour }}|{{ entry.course_name }}">
+                                    {{ entry.course_name }} ({{ day }} - {{ hour }})
+                                </option>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Swap Courses</button>
+        </form>
         {% if timetable %}
             <div style="overflow-x:auto;">
             <table>

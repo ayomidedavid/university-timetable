@@ -4,15 +4,11 @@
 
 {% block content %}
 <h1>Upload Timetable</h1>
-<form action="{{ url_for('timetable_bp.upload_timetable') }}" method="POST" enctype="multipart/form-data">
-    {{ form.hidden_tag() }}
-    <div>
-        {{ form.csv_file.label }}<br>
-        {{ form.csv_file }}
-    </div>
-    <div>
-        {{ form.submit(class="btn btn-primary") }}
-    </div>
+<form action="{{ url_for('timetable_bp.upload_timetable') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+    <!-- Plain HTML form, no FlaskForm, no CSRF token -->
+    <label for="csv_file">Upload CSV</label><br>
+    <input type="file" name="csv_file" id="csv_file" accept=".csv" required><br>
+    <button type="submit" class="btn btn-primary">Upload and Generate</button>
 </form>
 <a href="{{ url_for('timetable_bp.timetable') }}">Back to Timetable</a>
 {% endblock %}

@@ -329,23 +329,40 @@
     <main>
         <h1>Uploaded Timetable</h1>
         <form action="{{ url_for('timetable_bp.upload_timetable') }}" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <!-- Plain HTML form, no FlaskForm, no CSRF token -->
             <label for="csv_file">Upload CSV to Generate Timetable</label>
             <input type="file" name="csv_file" id="csv_file" accept=".csv">
             <button type="submit">Upload and Generate</button>
         </form>
         <hr>
+        <!-- Filter by Level -->
+        <form method="get" action="{{ url_for('timetable_bp.upload_timetable') }}">
+            <label for="level_filter">Filter by Level:</label>
+            <select name="level" id="level_filter">
+                <option value="">All Levels</option>
+                <option value="100" {% if selected_level == "100" %}selected{% endif %}>100</option>
+                <option value="200" {% if selected_level == "200" %}selected{% endif %}>200</option>
+                <option value="300" {% if selected_level == "300" %}selected{% endif %}>300</option>
+                <option value="400" {% if selected_level == "400" %}selected{% endif %}>400</option>
+                {% for lvl in levels %}
+                    {% if lvl not in ["100", "200", "300", "400"] %}
+                        <option value="{{ lvl }}" {% if lvl|string == selected_level|string %}selected{% endif %}>{{ lvl }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <button type="submit">Apply Filter</button>
+        </form>
         <h2>Generated Timetable</h2>
         <div class="timetable-actions">
             <button onclick="printTable()" class="btn btn-print">Print Timetable</button>
             <button onclick="clearTimetable(event)" class="btn btn-danger">Clear Timetable</button>
             <form id="clear-timetable-form" action="{{ url_for('timetable_bp.clear_timetable') }}" method="POST" style="display: none;">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <!-- CSRF token removed -->
             </form>
         </div>
         <p id="selected-course" style="display: none;"></p>
         <form action="{{ url_for('timetable_bp.edit_timetable') }}" method="POST" class="swap-form">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <!-- CSRF token removed -->
             <div class="swap-form-row">
                 <label for="course1"><strong>Swap:</strong> Select First Course</label>
                 <select name="course1" required>
@@ -376,7 +393,15 @@
             </div>
             <button type="submit" class="btn btn-primary">Swap Courses</button>
         </form>
-        {% if timetable %}
+        {% set has_entries = false %}
+        {% for day, slots in timetable.items() %}
+            {% for hour, entries in slots.items() %}
+                {% if entries|length > 0 %}
+                    {% set has_entries = true %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        {% if timetable and has_entries %}
             <div style="overflow-x:auto;">
             <table>
                 <thead>
@@ -394,24 +419,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for day in days %}
+                    {% for day, slots in timetable.items() %}
                         <tr>
-                            <td data-label="Day">{{ day }}</td>
+                            <td>{{ day }}</td>
                             {% for hour in time_slots %}
-                                <td data-label="{{ hour == '12:00' and 'Break' or hour + '-' + (hour.split(':')[0]|int + 1)|string + ':00' }}">
-                                    {% if hour == "12:00" %}
-                                        <div>Break</div>
+                                <td>
+                                    {% set entry = slots[hour]|first %}
+                                    {% if entry %}
+                                        {{ entry.course_name }}
+                                        <div>
+                                            <small>Lecturer: {{ entry.lecturer_name }}</small>
+                                        </div>
+                                        <div>
+                                            <small>Venue: {{ entry.venue_name }}</small>
+                                        </div>
                                     {% else %}
-                                        {% for entry in timetable[day][hour] %}
-                                            <div>
-                                                <strong>{{ entry.course_name }}</strong><br>
-                                                Unit: {{ entry.course_unit }}<br>
-                                                Venue: {{ entry.venue }}<br>
-                                                Lecturer: {{ entry.lecturer }}<br>
-                                                Level: {{ entry.level }}
-                                            </div>
-                                            <hr class="entry-divider">
-                                        {% endfor %}
+                                        &nbsp;
                                     {% endif %}
                                 </td>
                             {% endfor %}
@@ -421,30 +444,7 @@
             </table>
             </div>
         {% else %}
-            <p>No timetable generated yet. Please upload a CSV file to generate the timetable.</p>
-        {% endif %}
-        {% if unscheduled_courses and unscheduled_courses|length > 0 %}
-            <h3>Unscheduled Courses</h3>
-            <div style="overflow-x:auto;">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Course Name</th>
-                        <th>Unscheduled Hours</th>
-                        <th>Reason</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for course in unscheduled_courses %}
-                        <tr>
-                            <td data-label="Course Name">{{ course.name }}</td>
-                            <td data-label="Unscheduled Hours">{{ course.hours }}</td>
-                            <td data-label="Reason">Could not be scheduled due to space, room, or time constraints</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            </div>
+            <p>No timetable available for the selected level.</p>
         {% endif %}
     </main>
 </body>

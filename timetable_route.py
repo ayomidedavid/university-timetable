@@ -69,6 +69,7 @@ class UploadForm(FlaskForm):
     submit = SubmitField('Upload and Generate')
 
 @timetable_bp.route('/upload_timetable', methods=['GET', 'POST'])
+@csrf.exempt  # Add this line to disable CSRF for this route
 def upload_timetable():
     """
     Handle the upload of a CSV file to generate and display a timetable.
@@ -167,13 +168,42 @@ def upload_timetable():
             session['timetable'] = timetable
             session['unscheduled_courses'] = unscheduled_courses
 
-            # Render the timetable directly
+            # Get all unique levels from the timetable
+            levels = set()
+            for day_slots in timetable.items():
+                for hour_entries in day_slots[1].items():
+                    for entry in hour_entries[1]:
+                        if entry['level']:
+                            levels.add(int(entry['level']))
+            # Always include 100, 200, 300, 400
+            default_levels = [100, 200, 300, 400]
+            levels = sorted(set(default_levels) | levels)
+
+            # Convert all levels to string for template comparison
+            levels = [str(l) for l in levels]
+
+            # Get selected level from query string
+            selected_level = request.args.get('level', '')
+
+            # Filter timetable if a level is selected
+            if selected_level:
+                # Only show timetable if there is at least one entry for the selected level
+                filtered_timetable = {day: {hour: [e for e in entries if str(e['level']) == selected_level]
+                                            for hour, entries in hours.items()}
+                                      for day, hours in timetable.items()}
+                # Remove days with no entries for the selected level
+                filtered_timetable = {day: hours for day, hours in filtered_timetable.items() if any(filtered_timetable[day][hour] for hour in filtered_timetable[day])}
+            else:
+                filtered_timetable = timetable
+
             return render_template(
                 'uploaded_timetable.html',
-                timetable=timetable,
+                timetable=filtered_timetable,
                 days=days,
                 time_slots=hours,
-                unscheduled_courses=unscheduled_courses  # Pass unscheduled courses to the template
+                unscheduled_courses=unscheduled_courses,
+                levels=levels,
+                selected_level=selected_level
             )
 
         else:

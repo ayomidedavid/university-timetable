@@ -1,13 +1,9 @@
 from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash, session
-from flask_wtf.csrf import CSRFProtect
 import MySQLdb
 from algorithm import generate_timetable, validate_hard_constraints, shuffle_timetable  # Import shuffle_timetable
 import os
 import csv
 from werkzeug.utils import secure_filename
-from flask_wtf import FlaskForm
-from wtforms import FileField, SubmitField
-from wtforms.validators import DataRequired
 from flask_mysqldb import MySQL  # Import MySQL
 
 UPLOAD_FOLDER = 'uploads'
@@ -17,13 +13,11 @@ timetable_bp = Blueprint('timetable_bp', __name__)
 timetable_bp.config = {}
 timetable_bp.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-csrf = CSRFProtect()
 mysql = MySQL()  # Initialize MySQL
 
 def create_app():
     app = Flask(__name__)
     app.secret_key = 'IjE0YzBjOGFlNjgyN2JhNDU5ZDBlNzM3MGNmN2FhYTBiYmI0OTRiMzQi.aAZjmA.EpSBK7M2EcDw7EjmxVICbVxSsyw'  # Replace with a secure key
-    csrf.init_app(app)  # Enable CSRF protection
 
     # MySQL configuration
     app.config["MYSQL_HOST"] = "localhost"
@@ -56,26 +50,43 @@ def timetable():
         "16:00", "17:00", "18:00"
     ]
 
+    # Get all unique levels from the timetable
+    levels = set()
+    for day_slots in timetable.items():
+        for hour_entries in day_slots[1].items():
+            for entry in hour_entries[1]:
+                if entry['level']:
+                    levels.add(int(entry['level']))
+    default_levels = [100, 200, 300, 400]
+    levels = sorted(set(default_levels) | levels)
+    levels = [str(l) for l in levels]
+
+    selected_level = request.args.get('level', '')
+    if selected_level:
+        filtered_timetable = {day: {hour: [e for e in entries if str(e['level']) == selected_level]
+                                    for hour, entries in hours_.items()}
+                              for day, hours_ in timetable.items()}
+        filtered_timetable = {day: hours_ for day, hours_ in filtered_timetable.items() if any(filtered_timetable[day][hour] for hour in filtered_timetable[day])}
+    else:
+        filtered_timetable = timetable
+
+    unscheduled_courses = session.get('unscheduled_courses', [])
+
     return render_template(
         'uploaded_timetable.html',
-        timetable=timetable,
+        timetable=filtered_timetable,
         days=days,
-        time_slots=hours
+        time_slots=hours,
+        unscheduled_courses=unscheduled_courses,
+        levels=levels,
+        selected_level=selected_level
     )
 
-# Define the form class
-class UploadForm(FlaskForm):
-    csv_file = FileField('Upload CSV', validators=[DataRequired()])
-    submit = SubmitField('Upload and Generate')
-
 @timetable_bp.route('/upload_timetable', methods=['GET', 'POST'])
-@csrf.exempt  # Add this line to disable CSRF for this route
 def upload_timetable():
     """
     Handle the upload of a CSV file to generate and display a timetable.
     """
-    form = UploadForm()  # Create an instance of the form
-
     if request.method == 'POST':
         if 'csv_file' not in request.files:
             flash('No file part', 'danger')
@@ -196,21 +207,15 @@ def upload_timetable():
             else:
                 filtered_timetable = timetable
 
-            return render_template(
-                'uploaded_timetable.html',
-                timetable=filtered_timetable,
-                days=days,
-                time_slots=hours,
-                unscheduled_courses=unscheduled_courses,
-                levels=levels,
-                selected_level=selected_level
-            )
+            # After saving timetable and unscheduled_courses to session, redirect to timetable page
+            return redirect(url_for('timetable_bp.timetable'))
 
         else:
             flash('Allowed file types are csv', 'danger')
             return redirect(request.url)
 
-    return render_template('upload_timetable.html', form=form)  # Pass the form to the template
+    # For GET, just render the upload page
+    return render_template('upload_timetable.html')
 
 @timetable_bp.route('/edit_timetable', methods=['POST'])
 def edit_timetable():

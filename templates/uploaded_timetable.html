@@ -336,7 +336,7 @@
         </form>
         <hr>
         <!-- Filter by Level -->
-        <form method="get" action="{{ url_for('timetable_bp.upload_timetable') }}">
+        <form method="get" action="{{ url_for('timetable_bp.timetable') }}">
             <label for="level_filter">Filter by Level:</label>
             <select name="level" id="level_filter">
                 <option value="">All Levels</option>
@@ -393,15 +393,25 @@
             </div>
             <button type="submit" class="btn btn-primary">Swap Courses</button>
         </form>
-        {% set has_entries = false %}
+        <!-- Show current level filter above timetable -->
+        <h3 style="margin-top:2rem;">
+            {% if selected_level %}
+                {{ selected_level }} Level Timetable
+            {% else %}
+                All Levels Timetable
+            {% endif %}
+        </h3>
+        {% set ns = namespace(has_entries=false) %}
         {% for day, slots in timetable.items() %}
             {% for hour, entries in slots.items() %}
-                {% if entries|length > 0 %}
-                    {% set has_entries = true %}
-                {% endif %}
+                {% for entry in entries %}
+                    {% if not selected_level or entry.level|string == selected_level|string %}
+                        {% set ns.has_entries = true %}
+                    {% endif %}
+                {% endfor %}
             {% endfor %}
         {% endfor %}
-        {% if timetable and has_entries %}
+        {% if timetable and ns.has_entries %}
             <div style="overflow-x:auto;">
             <table>
                 <thead>
@@ -419,26 +429,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for day, slots in timetable.items() %}
+                    {% for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] %}
+                        {% if timetable[day] is defined %}
                         <tr>
                             <td>{{ day }}</td>
                             {% for hour in time_slots %}
                                 <td>
-                                    {% set entry = slots[hour]|first %}
-                                    {% if entry %}
-                                        {{ entry.course_name }}
-                                        <div>
-                                            <small>Lecturer: {{ entry.lecturer_name }}</small>
-                                        </div>
-                                        <div>
-                                            <small>Venue: {{ entry.venue_name }}</small>
-                                        </div>
+                                    {% set entries = timetable[day][hour] %}
+                                    {% if entries and entries|length > 0 %}
+                                        {% for entry in entries|sort(attribute='level') %}
+                                            {% if not selected_level or entry.level|string == selected_level|string %}
+                                            <div style="margin-bottom:0.5em; padding:0.3em; border-bottom:1px solid #e3e6f0;">
+                                                <strong>{{ entry.course_name }}</strong><br>
+                                                <small>Lecturer: {{ entry.lecturer }}</small><br>
+                                                <small>Venue: {{ entry.venue }}</small><br>
+                                                <small>Level: {{ entry.level }}</small><br>
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
                                     {% else %}
                                         &nbsp;
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
             </table>

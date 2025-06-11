@@ -25,6 +25,10 @@ app.register_blueprint(dashboard_bp)
 app.config['SECRET_KEY'] = Config.SECRET_KEY  # Ensure SECRET_KEY is set
 csrf = CSRFProtect(app)  # Initialize CSRF protection
 
+# Exempt upload_timetable from CSRF after blueprint registration
+from timetable_route import upload_timetable
+csrf.exempt(upload_timetable)
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # MySQL Configuration

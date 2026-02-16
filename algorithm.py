@@ -206,6 +206,28 @@ def validate_hard_constraints(course, room, time_slot, timetable):
             print(f"1-unit course {course['course_name']} must be scheduled only on Wednesday 17:00-18:00")
             return False
 
+    # 7. Max 3 courses per day for a level
+    # Get all courses scheduled for this level on this day
+    level_courses_today = {
+        entry['course_name'] for entry in timetable
+        if entry['level'] == course['level'] and entry['time_slot']['day'] == time_slot['day']
+    }
+    # If the course is not already scheduled today, check if adding it would exceed the limit
+    if course['course_name'] not in level_courses_today and len(level_courses_today) >= 3:
+        print(f"Level {course['level']} already has 3 courses on {time_slot['day']}")
+        return False
+
+    # 8. Max 2 lectures per day for a lecturer
+    # Get all courses scheduled for this lecturer on this day
+    lecturer_courses_today = {
+        entry['course_name'] for entry in timetable
+        if entry['lecturer'] == course['lecturer'] and entry['time_slot']['day'] == time_slot['day']
+    }
+    # If the course is not already scheduled today, check if adding it would exceed the limit
+    if course['course_name'] not in lecturer_courses_today and len(lecturer_courses_today) >= 2:
+        print(f"Lecturer {course['lecturer']} already has 2 lectures on {time_slot['day']}")
+        return False
+
     return True
 
 

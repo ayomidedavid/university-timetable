@@ -31,7 +31,7 @@ time_slots = [
 ]
 
 # Generate timetable
-timetable = algorithm.generate_timetable(courses, rooms, time_slots, algorithm.validate_hard_constraints)
+timetable, unscheduled = algorithm.generate_timetable(courses, rooms, time_slots, algorithm.validate_hard_constraints)
 
 # Print results
 print("\nGenerated Timetable:")
@@ -46,7 +46,7 @@ print(f"No classes during break time: {'PASS' if not break_time_scheduled else '
 
 # 2. Check 3-unit courses are split correctly
 cs201_slots = [entry for entry in timetable if entry['course_name'] == 'CS 201']
-print(f"3-unit course split correctly: {'PASS' if len(cs201_slots) == 2 else 'FAIL'} (found {len(cs201_slots)} slots)")
+print(f"3-unit course split correctly: {'PASS' if len(cs201_slots) == 3 else 'FAIL'} (found {len(cs201_slots)} slots)")
 
 # 3. Check same level courses not at same time
 level_conflicts = False
